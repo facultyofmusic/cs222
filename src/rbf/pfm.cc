@@ -60,12 +60,28 @@ RC PagedFileManager::destroyFile(const string &fileName)
 
 RC PagedFileManager::openFile(const string &fileName, FileHandle &fileHandle)
 {
-    return -1;
+	// Check if file already exists before opening it.
+	std::ifstream existingFile(fileName);
+	if (existingFile.good()) {
+		existingFile.close();
+
+		// Initialize new file handle
+		fileHandle.stream.open(fileName,
+				std::fstream::in | std::fstream::out | std::fstream::app);
+		return 0;
+	}
+
+	return -1;
 }
 
 
 RC PagedFileManager::closeFile(FileHandle &fileHandle)
 {
+	// Check if the fileHandle's stream is open before closing it.
+	if (fileHandle.stream.is_open()) {
+		fileHandle.stream.close();
+		return 0;
+	}
     return -1;
 }
 
@@ -103,7 +119,7 @@ RC FileHandle::appendPage(const void *data)
 
 unsigned FileHandle::getNumberOfPages()
 {
-    return -1;
+    return 0;
 }
 
 
