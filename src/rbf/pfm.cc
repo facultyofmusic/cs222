@@ -62,16 +62,20 @@ RC PagedFileManager::openFile(const string &fileName, FileHandle &fileHandle)
 {
 	// Check if file already exists before opening it.
 	std::ifstream existingFile(fileName);
-	if (existingFile.good()) {
-		existingFile.close();
+	if (!existingFile.good()) {
+		return -1;
+	}
+	existingFile.close();
 
-		// Initialize new file handle
-		fileHandle.stream.open(fileName,
-				std::fstream::in | std::fstream::out | std::fstream::app);
-		return 0;
+	// Check if the file handle already handles another file.
+	if (fileHandle.stream.is_open()) {
+		return -1;
 	}
 
-	return -1;
+	// Initialize new file handle
+	fileHandle.stream.open(fileName,
+			std::fstream::in | std::fstream::out | std::fstream::app);
+	return 0;
 }
 
 
