@@ -2,6 +2,7 @@
 
 #include <iostream>
 #include <fstream>
+#include <cstdio>
 
 PagedFileManager* PagedFileManager::_pf_manager = 0;
 
@@ -43,7 +44,17 @@ RC PagedFileManager::createFile(const string &fileName)
 
 RC PagedFileManager::destroyFile(const string &fileName)
 {
-    return -1;
+	// Check if file already exists before deleting it.
+	std::ifstream existingFile(fileName);
+	if (existingFile.good()) {
+		existingFile.close();
+
+		// Delete file now that we're sure it exists.
+		std::remove(fileName.c_str());
+		return 0;
+	}
+
+	return -1;
 }
 
 
