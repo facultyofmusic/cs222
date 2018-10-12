@@ -1,5 +1,8 @@
 #include "pfm.h"
 
+#include <iostream>
+#include <fstream>
+
 PagedFileManager* PagedFileManager::_pf_manager = 0;
 
 PagedFileManager* PagedFileManager::instance()
@@ -23,7 +26,18 @@ PagedFileManager::~PagedFileManager()
 
 RC PagedFileManager::createFile(const string &fileName)
 {
-    return -1;
+	// Check if file already exists. Fail if it does.
+	std::ifstream existingFile(fileName);
+	if (existingFile.good()) {
+		existingFile.close();
+		return -1;
+	}
+
+	// Create a new file.
+	std::ofstream newFile;
+	newFile.open(fileName, ios::out);
+	newFile.close();
+    return 0;
 }
 
 
